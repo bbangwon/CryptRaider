@@ -63,18 +63,8 @@ void UGrabber::Grab()
 		return;
 	}
 
-	FVector Start = GetComponentLocation();
-	FVector End = Start + GetForwardVector() * MaxGrabDistance;
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
-	DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Blue, false, 5);
-
 	FHitResult HitResult;
-	FCollisionShape Shape = FCollisionShape::MakeSphere(GrabRadius);
-	bool HasHit = GetWorld()->SweepSingleByChannel(HitResult,
-		Start, End,
-		FQuat::Identity,
-		ECC_GameTraceChannel2,
-		Shape);
+	bool HasHit = GetGrabbableInReach(HitResult);
 
 	if (HasHit)
 	{
@@ -88,6 +78,21 @@ void UGrabber::Grab()
 			GetComponentRotation()
 		);
 	}	
+}
+
+bool UGrabber::GetGrabbableInReach(FHitResult& OutHitResult) const
+{
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * MaxGrabDistance;
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red);
+	DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Blue, false, 5);
+
+	FCollisionShape Shape = FCollisionShape::MakeSphere(GrabRadius);
+	return GetWorld()->SweepSingleByChannel(OutHitResult,
+		Start, End,
+		FQuat::Identity,
+		ECC_GameTraceChannel2,
+		Shape);
 }
 
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
