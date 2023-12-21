@@ -11,7 +11,7 @@ UTriggerComponent::UTriggerComponent()
 void UTriggerComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Display, TEXT("Trigger Component Alive"));
+	UE_LOG(LogTemp, Display, TEXT("Trigger Component Alive : %s"), *GetOwner()->GetActorNameOrLabel());
 }
 
 void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -41,6 +41,7 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UTriggerComponent::SetMover(UMover* NewMover)
 {
+	UE_LOG(LogTemp, Display, TEXT("SetMover : %s"), *NewMover->GetOwner()->GetActorNameOrLabel());
 	Mover = NewMover;
 }
 
@@ -51,7 +52,6 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 
 	for (AActor* Actor : Actors)
 	{
-		UE_LOG(LogTemp, Display, TEXT("ActorName : %s"), *Actor->GetActorNameOrLabel());
 		bool HasAcceptableTag = Actor->ActorHasTag(AcceptableActorTag);
 		bool IsGrabbed = Actor->ActorHasTag("Grabbed");
 		if (HasAcceptableTag && !IsGrabbed)
